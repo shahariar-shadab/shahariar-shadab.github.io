@@ -1,0 +1,15 @@
+# Private values — never commit
+.env
+
+# Local tooling / scratch
+.venv/
+.tmp/
+__pycache__/
+.DS_Store
+
+# Personal notes and open questions — kept on this Mac only
+content/INFO_NEEDED.md
+
+# Source files kept on this Mac only (the site uses the generated copies in docs/)
+brand_assets/
+content/resume/*.pdf

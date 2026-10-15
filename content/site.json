@@ -1,0 +1,170 @@
+{
+  "meta": {
+    "name": "Shahariar Shadab",
+    "short_name": "Shah",
+    "title": "Shahariar Shadab — Data Analyst · Automation & Agents",
+    "description": "Data analyst in New York turning repeatable analysis into automated, tested workflows — dashboards for 700+ NYC schools, validated models, and reporting pipelines in SQL, Python, Excel, Power BI and Tableau."
+  },
+
+  "hero": {
+    "eyebrow": "Data analyst → automation & agents",
+    "headline_lead": "From SQL",
+    "headline_accent": "agents.",
+    "intro": "I'm Shah, a data analyst turning repeatable analysis into automated, tested workflows, with a person approving what matters.",
+    "status": "Open to Data & BI Analyst roles · New York, NY"
+  },
+
+  "pipeline": {
+    "caption": "The workflow I build toward",
+    "steps": [
+      { "label": "Query", "text": "SQL on tested, documented tables" },
+      { "label": "Agent", "text": "Drafts the analysis and flags what looks off" },
+      { "label": "Human review", "text": "I check the result before it ships", "accent": true },
+      { "label": "Decision", "text": "Stakeholders get a clean, repeatable answer" }
+    ]
+  },
+
+  "impact": [
+    { "value": "5+", "label": "years in analytics" },
+    { "value": "700+", "label": "NYC schools on automated dashboards" },
+    { "value": "80%", "label": "faster report turnaround" },
+    { "value": "+35%", "label": "website traffic from market analysis" }
+  ],
+
+  "case_studies": [
+    {
+      "org": "NYC Department of Health",
+      "title": "Manual reports → automated school dashboards",
+      "metric": "700+ dashboards · 80% faster",
+      "summary": "A VBA macro and Power Query pipeline that turns staff spreadsheets into per-school PDF dashboards, filed by district in SharePoint.",
+      "problem": "School Medical Directors needed each school's health data (asthma rates, screening results) before site visits. Compiling it was a manual, file-by-file process, and 10+ staff editing shared inputs risked overwriting each other's work.",
+      "approach": "Designed a Power Query pipeline that consolidates inputs from 10+ staff into one dataset without touching the source files. Built an Excel VBA macro that formats a dashboard for every school, exports each one as a PDF, and files it into district-organized SharePoint folders.",
+      "validation": "Source files stay read-only, so every dashboard can be traced back to its inputs, and a single consolidated dataset removed overwrite conflicts.",
+      "result": "Dashboards for 700+ NYC public schools, delivered straight to Medical Directors, with report turnaround improved by 80%.",
+      "tools": ["Excel VBA", "Power Query", "SharePoint"]
+    },
+    {
+      "org": "NYC Department of Health",
+      "title": "Gut-feel priorities → validated risk model",
+      "metric": "700+ schools · 6 weighted indicators",
+      "summary": "Co-built a School Risk Prioritization Model and independently re-ran it in Python before it reached management.",
+      "problem": "The Bureau of School Health needed a defensible way to decide which of 700+ public schools to prioritize, using several health and risk indicators at once.",
+      "approach": "Partnered with a colleague on a model ranking schools across 6 weighted indicators. Built a parallel analysis in Python to reproduce the ranking independently.",
+      "validation": "Compared the Python results against the model output and quality-checked the final ranked list before presenting it.",
+      "result": "A ranked, validated list of 700+ schools presented to management to guide where support goes first.",
+      "tools": ["Python", "Excel", "PowerPoint"]
+    },
+    {
+      "org": "Mirimus Inc.",
+      "title": "Spreadsheet guesswork → forecasting dashboards",
+      "metric": "+20% forecast accuracy",
+      "summary": "Weekly test-volume, capacity and staffing forecasts for a COVID-testing lab serving B2B partners and NJ public schools.",
+      "problem": "A biotech startup's testing supply chain had to plan lab staffing and inventory around demand that changed week to week.",
+      "approach": "Designed weekly test-volume, capacity and staffing forecasting dashboards in Excel and SQL, plus recurring KPI dashboards on inventory and lab staffing in Shopify Analytics and Tableau.",
+      "validation": "Reviewed the dashboards in daily and weekly team meetings, where the operations team checked them against what actually happened.",
+      "result": "Forecasting accuracy improved by 20%, letting a team of 10+ lab technicians adjust schedules ahead of time.",
+      "tools": ["SQL", "Excel", "Tableau", "Shopify Analytics"]
+    },
+    {
+      "org": "Serino Coyne (Omnicom)",
+      "title": "Market research → holiday pricing strategy",
+      "metric": "+35% traffic · +25% conversion",
+      "summary": "Competitor and consumer analysis behind a new holiday-season pricing and promotion plan.",
+      "problem": "A client needed a holiday-season pricing and promotional strategy grounded in market data, not instinct.",
+      "approach": "Ran market trend research and competitor analysis, and analyzed 1,000+ consumer demographic and financial data points in Excel (SUMIFS, VLOOKUP, PivotTables) to inform pricing adjustments. Automated the recurring reports with SQL and Excel.",
+      "validation": "Recurring reports were automated rather than rebuilt by hand, so stakeholders saw consistent numbers every cycle, 20% faster.",
+      "result": "35% more website traffic, a 25% higher conversion rate, and a 20% increase in ticket sales.",
+      "tools": ["Excel", "SQL", "Market research"]
+    }
+  ],
+  "case_study_note": "Details are generalized. No confidential data is shown.",
+
+  "pillars": [
+    {
+      "icon": "shield",
+      "title": "Trusted data",
+      "text": "Pipelines that protect their sources: one consolidated dataset from 10+ contributors, and models re-checked independently in Python before anyone acts on them."
+    },
+    {
+      "icon": "bolt",
+      "title": "Automated workflows",
+      "text": "If a report runs twice, it should run itself: VBA, Power Query and SQL replacing manual compiling, formatting and filing."
+    },
+    {
+      "icon": "chat",
+      "title": "Human on the loop",
+      "text": "Automation drafts; a person decides. I quality-check outputs and present them so stakeholders can act with confidence.",
+      "accent": true
+    }
+  ],
+
+  "experience": [
+    {
+      "org": "NYC Department of Health (DOHMH)",
+      "role": "Data Analyst, Bureau of School Health",
+      "dates": "Apr 2025 – Present",
+      "points": [
+        "Co-built a School Risk Prioritization Model for 700+ schools and validated it with a parallel Python analysis.",
+        "Automated per-school health dashboards (VBA + Power Query) with PDF export to SharePoint, improving turnaround by 80%."
+      ]
+    },
+    {
+      "org": "Apple",
+      "role": "Product Specialist (Part-Time)",
+      "dates": "Oct 2023 – Nov 2025",
+      "points": [
+        "Analyzed customer purchasing patterns to recommend tailored bundles, averaging $250K in quarterly sales with 95+ NPS.",
+        "Connected 50+ local business prospects per quarter with Apple's Business Team, contributing to a 20% boost in B2B conversion."
+      ]
+    },
+    {
+      "org": "Serino Coyne by Omnicom",
+      "role": "Analyst, Client Insights",
+      "dates": "Mar 2022 – Apr 2023",
+      "points": [
+        "Market and competitor analysis behind a holiday pricing strategy: +35% traffic, +25% conversion.",
+        "Automated recurring reports with SQL and Excel, speeding up analysis turnaround by 20%."
+      ]
+    },
+    {
+      "org": "COOP Careers",
+      "role": "Data Analytics Instructor",
+      "dates": "Feb 2022 – Nov 2023",
+      "points": [
+        "Designed and taught a semester-long Excel, Tableau and SQL curriculum to 17+ students per semester, with 93% retention."
+      ]
+    },
+    {
+      "org": "Mirimus Inc.",
+      "role": "Junior Analyst, Sales & Operations",
+      "dates": "Apr 2021 – Mar 2022",
+      "points": [
+        "Built forecasting and KPI dashboards (Excel, SQL, Tableau) that improved forecast accuracy by 20%.",
+        "Streamlined 300+ weekly B2B inquiries in HubSpot and Monday.com, improving operational efficiency by 15%."
+      ]
+    }
+  ],
+
+  "skills": [
+    { "icon": "chart", "group": "Analysis & BI", "items": ["SQL (MySQL)", "Python", "Excel", "Power BI", "Tableau", "PowerPoint"] },
+    { "icon": "bolt", "group": "Automation", "items": ["VBA", "Power Query", "Data pipelines", "Report automation", "Git", "Google Colab"] },
+    { "icon": "layers", "group": "Methods", "items": ["Dashboard design", "KPI reporting", "Forecasting", "Cohort analysis", "Market research", "Competitor benchmarking"] },
+    { "icon": "search", "group": "Platforms & domains", "items": ["SharePoint", "HubSpot", "Shopify Analytics", "Monday.com", "Public health data", "B2B sales analytics"] }
+  ],
+
+  "certifications": [
+    { "name": "Advanced Formulas and Functions in Excel", "issuer": "NASBA", "year": "2024" },
+    { "name": "AI for Data Professionals", "issuer": "Analyst Builder", "year": "" },
+    { "name": "SQL coursework: Intermediate SQL, Joining Data, Hierarchical & Recursive Queries", "issuer": "DataCamp", "year": "2025" }
+  ],
+
+  "education": [
+    { "school": "Zicklin School of Business, Baruch College (CUNY)", "degree": "M.S. Information Systems, Data Analytics concentration", "dates": "Expected May 2027" },
+    { "school": "Queens College (CUNY)", "degree": "B.A. Economics, Minor in Urban Planning", "dates": "2021" }
+  ],
+
+  "contact": {
+    "heading": "Let's talk data.",
+    "text": "Hiring for a data or BI analyst role, or have a reporting process that should run itself? Send a note and I'll get back to you."
+  }
+}

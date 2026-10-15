@@ -1,0 +1,732 @@
+<!doctype html>
+<!--
+  SHAH — portfolio of Shahariar Shadab
+  GENERATED FILE in docs/ — edit site/template.html + content/site.json, then run tools/build_site.py.
+
+  tokens    brand palette = SHAH Visual Identity v1.0 (brand_assets/Brand Guidelines.png).
+            Components use THEME tokens only (--bg, --text, --accent, …), never brand colours directly.
+  themes    dark is the default and the brand's signature look. Light follows the visitor's system setting
+            (prefers-color-scheme) unless they pick one with the nav toggle (saved in localStorage "theme",
+            applied as <html data-theme="light|dark"> before first paint).
+            The light token block appears TWICE (auto + forced) — keep the two copies identical.
+            Light-mode rules: Sky Glow, Amber and Slate fail as text on light, so text uses Cobalt / dark amber /
+            dark slate; Volt Blue is a fill (with Midnight text) or the giant headline only.
+  sections  nav · hero · impact · work · approach · experience · skills · contact · footer (data-section)
+  scripts   head: apply saved theme. body: theme toggle, nav state, hero pipeline light-up, scroll reveals,
+            contact form (Formspree when an ID is set, otherwise composes an email)
+  motion    everything animated is skipped under prefers-reduced-motion; with JS off, all content is visible
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shahariar Shadab — Data Analyst · Automation &amp; Agents</title>
+<meta name="description" content="Data analyst in New York turning repeatable analysis into automated, tested workflows — dashboards for 700+ NYC schools, validated models, and reporting pipelines in SQL, Python, Excel, Power BI and Tableau.">
+<meta name="author" content="Shahariar Shadab">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#071426" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F4F8FD" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="https://shahariar-shadab.github.io/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Shahariar Shadab — Data Analyst · Automation &amp; Agents">
+<meta property="og:description" content="Data analyst in New York turning repeatable analysis into automated, tested workflows — dashboards for 700+ NYC schools, validated models, and reporting pipelines in SQL, Python, Excel, Power BI and Tableau.">
+<meta property="og:image" content="https://shahariar-shadab.github.io/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
+<script>
+  /* Saved theme choice, applied before first paint so there is no flash */
+  try { var t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}
+  /* Motion classes only when JS runs and the visitor allows motion */
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("motion");
+</script>
+<style>
+:root {
+  /* ---- SHAH brand palette (reference) ----
+     Midnight #071426 · Deep Navy #0E2441 · Cobalt #1747B8 · Volt Blue #2F7CFF
+     Sky Glow #7DCBFF · Slate Blue #8FA9C9 · Mist #DCE8F7 · Signal Amber #FFB43B */
+  --volt: #2F7CFF;
+  --amber: #FFB43B;
+  --on-fill: #071426;            /* text on Volt Blue / Amber fills: 4.8:1 and 10.4:1 */
+
+  /* ---- DARK theme (default, brand signature) ---- */
+  --bg: #071426;
+  --dot: rgba(143, 169, 201, .13);
+  --bg-glow: rgba(23, 71, 184, .45);
+  --text: #DCE8F7;               /* Mist          14.9:1 */
+  --text-strong: #FFFFFF;
+  --text-muted: #8FA9C9;         /* Slate Blue     7.6:1 */
+  --accent: #7DCBFF;             /* Sky Glow      10.4:1 — links, labels, metrics */
+  --accent-2: #2F7CFF;           /* Volt Blue — section numbers, bullets */
+  --headline-accent: #7DCBFF;
+  --human: #FFB43B;              /* "human review" text + icon */
+  --human-ring: rgba(255, 180, 59, .22);
+  --line: rgba(125, 203, 255, .14);
+  --line-strong: rgba(125, 203, 255, .32);
+  --card: rgba(14, 36, 65, .72);
+  --card-soft: rgba(14, 36, 65, .45);
+  --card-solid: rgba(14, 36, 65, .9);
+  --pipe-bg: linear-gradient(160deg, rgba(14, 36, 65, .92), rgba(7, 20, 38, .85));
+  --nav-bg: rgba(7, 20, 38, .82);
+  --field-bg: rgba(7, 20, 38, .7);
+  --dot-fill: #7DCBFF;
+  --dot-glow: rgba(125, 203, 255, .7);
+  --icon-glow: rgba(47, 124, 255, .18);
+  --shadow: rgba(0, 0, 0, .35);
+  --btn-glow: 0 0 0 1px rgba(47, 124, 255, .4), 0 8px 32px rgba(47, 124, 255, .45);
+  --btn-glow-hover: 0 0 0 1px rgba(47, 124, 255, .5), 0 12px 40px rgba(47, 124, 255, .6);
+  --btn-secondary-hover-text: #071426;
+  --logo-stroke: #FFFFFF;
+  --logo-dot: #7DCBFF;
+  --logo-glow: drop-shadow(0 0 6px rgba(47, 124, 255, .75));  /* glow on dark backgrounds only */
+  --contact-glow: rgba(23, 71, 184, .35);
+  --show-sun: inline;            /* toggle shows the sun in dark mode (click → light) */
+  --show-moon: none;
+  color-scheme: dark;
+
+  --sans: "Sora", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --gutter: clamp(16px, 5vw, 64px);
+  --max: 1180px;
+  --radius: 22px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+/* ---- LIGHT theme: copy 1 of 2 — automatic, from the visitor's system setting ---- */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F4F8FD;
+    --dot: rgba(23, 71, 184, .10);
+    --bg-glow: rgba(47, 124, 255, .16);
+    --text: #1C2B44;               /* 13.3:1 */
+    --text-strong: #071426;        /* 17.3:1 */
+    --text-muted: #4A5D78;         /*  6.3:1 */
+    --accent: #1747B8;             /* Cobalt 7.5:1 */
+    --accent-2: #1747B8;
+    --headline-accent: #2F7CFF;    /* Volt Blue, large text only (3.6:1) */
+    --human: #8A5400;              /* dark amber 5.9:1 */
+    --human-ring: rgba(255, 180, 59, .35);
+    --line: rgba(23, 71, 184, .12);
+    --line-strong: rgba(23, 71, 184, .24);
+    --card: #FFFFFF;
+    --card-soft: rgba(255, 255, 255, .72);
+    --card-solid: #FFFFFF;
+    --pipe-bg: linear-gradient(160deg, #FFFFFF, #EEF4FC);
+    --nav-bg: rgba(244, 248, 253, .86);
+    --field-bg: #FFFFFF;
+    --dot-fill: #2F7CFF;
+    --dot-glow: rgba(47, 124, 255, .35);
+    --icon-glow: rgba(47, 124, 255, .10);
+    --shadow: rgba(7, 20, 38, .10);
+    --btn-glow: 0 0 0 1px rgba(47, 124, 255, .25), 0 8px 24px rgba(47, 124, 255, .28);
+    --btn-glow-hover: 0 0 0 1px rgba(47, 124, 255, .35), 0 12px 32px rgba(47, 124, 255, .38);
+    --btn-secondary-hover-text: #FFFFFF;
+    --logo-stroke: #071426;
+    --logo-dot: #2F7CFF;
+    --logo-glow: none;
+    --contact-glow: rgba(47, 124, 255, .12);
+    --show-sun: none;
+    --show-moon: inline;
+    color-scheme: light;
+  }
+}
+/* ---- LIGHT theme: copy 2 of 2 — chosen with the toggle. Keep identical to copy 1. ---- */
+:root[data-theme="light"] {
+  --bg: #F4F8FD;
+  --dot: rgba(23, 71, 184, .10);
+  --bg-glow: rgba(47, 124, 255, .16);
+  --text: #1C2B44;
+  --text-strong: #071426;
+  --text-muted: #4A5D78;
+  --accent: #1747B8;
+  --accent-2: #1747B8;
+  --headline-accent: #2F7CFF;
+  --human: #8A5400;
+  --human-ring: rgba(255, 180, 59, .35);
+  --line: rgba(23, 71, 184, .12);
+  --line-strong: rgba(23, 71, 184, .24);
+  --card: #FFFFFF;
+  --card-soft: rgba(255, 255, 255, .72);
+  --card-solid: #FFFFFF;
+  --pipe-bg: linear-gradient(160deg, #FFFFFF, #EEF4FC);
+  --nav-bg: rgba(244, 248, 253, .86);
+  --field-bg: #FFFFFF;
+  --dot-fill: #2F7CFF;
+  --dot-glow: rgba(47, 124, 255, .35);
+  --icon-glow: rgba(47, 124, 255, .10);
+  --shadow: rgba(7, 20, 38, .10);
+  --btn-glow: 0 0 0 1px rgba(47, 124, 255, .25), 0 8px 24px rgba(47, 124, 255, .28);
+  --btn-glow-hover: 0 0 0 1px rgba(47, 124, 255, .35), 0 12px 32px rgba(47, 124, 255, .38);
+  --btn-secondary-hover-text: #FFFFFF;
+  --logo-stroke: #071426;
+  --logo-dot: #2F7CFF;
+  --logo-glow: none;
+  --contact-glow: rgba(47, 124, 255, .12);
+  --show-sun: none;
+  --show-moon: inline;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 88px; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.6px);
+  background-size: 28px 28px;
+  color: var(--text);
+  font: 400 1rem/1.65 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+/* soft radial blue glow, top-right (brand background) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -20vh -20vw auto auto;
+  width: 70vw; height: 80vh;
+  background: radial-gradient(closest-side, var(--bg-glow), transparent);
+  pointer-events: none;
+  z-index: -1;
+}
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--text-strong); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+img, svg { display: block; max-width: 100%; }
+h1, h2, h3, p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+
+.wrap { width: min(100% - 2 * var(--gutter), var(--max)); margin-inline: auto; }
+.eyebrow {
+  font: 500 .8rem/1.4 var(--mono);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.skip { position: absolute; left: 16px; top: -60px; z-index: 100; background: var(--volt); color: var(--on-fill); padding: 10px 16px; border-radius: 999px; font-weight: 600; }
+.skip:focus { top: 16px; }
+
+/* ---------- logo ---------- */
+.logo { display: inline-flex; align-items: center; gap: 14px; color: var(--text-strong); text-decoration: none; }
+.logo:hover { color: var(--text-strong); }
+.logo svg { width: 30px; height: auto; filter: var(--logo-glow); }
+.logo .logo-s { stroke: var(--logo-stroke); }
+.logo .logo-dot { fill: var(--logo-dot); }
+.logo span { font: 800 1.45rem/1 var(--sans); letter-spacing: .06em; }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 52px; padding: 0 28px;
+  border-radius: 999px;
+  font: 600 1rem/1 var(--sans);
+  text-decoration: none;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: transform .2s var(--ease), box-shadow .2s var(--ease), background .2s, color .2s;
+}
+.btn svg { width: 18px; height: 18px; }
+.btn--primary { background: var(--volt); color: var(--on-fill); box-shadow: var(--btn-glow); }
+.btn--primary:hover { color: var(--on-fill); transform: translateY(-2px); box-shadow: var(--btn-glow-hover); }
+.btn--secondary { color: var(--accent); border-color: var(--accent); background: transparent; }
+.btn--secondary:hover { color: var(--btn-secondary-hover-text); background: var(--accent); }
+.btn--accent { background: var(--amber); color: var(--on-fill); }
+.btn--accent:hover { color: var(--on-fill); transform: translateY(-2px); box-shadow: 0 10px 32px rgba(255,180,59,.35); }
+.btn--sm { min-height: 44px; padding: 0 22px; font-size: .95rem; }
+
+/* theme toggle */
+.theme-toggle {
+  display: inline-grid; place-items: center;
+  width: 44px; height: 44px; flex: none;
+  border-radius: 50%;
+  border: 1.5px solid var(--line-strong);
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.theme-toggle:hover { border-color: var(--accent); background: var(--card-soft); }
+.theme-toggle svg { width: 20px; height: 20px; }
+.theme-toggle .i-sun { display: var(--show-sun); }
+.theme-toggle .i-moon { display: var(--show-moon); }
+
+/* ---------- nav ---------- */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  transition: background .3s, border-color .3s;
+  border-bottom: 1px solid transparent;
+}
+.nav.is-scrolled { background: var(--nav-bg); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-color: var(--line); }
+.nav__inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 84px; }
+.nav__links { display: flex; align-items: center; gap: clamp(12px, 3vw, 32px); }
+.nav__links a:not(.btn) { color: var(--text-strong); text-decoration: none; font-weight: 600; }
+.nav__links a:not(.btn):hover { color: var(--accent); }
+@media (max-width: 720px) { .nav__links a:not(.btn) { display: none; } }
+
+/* ---------- section heading ---------- */
+.section { padding-block: clamp(72px, 10vw, 120px); }
+.section__head { display: flex; align-items: center; gap: 18px; margin-bottom: clamp(32px, 5vw, 52px); }
+.section__head .num { font: 500 .95rem var(--mono); color: var(--accent-2); letter-spacing: .1em; }
+.section__head h2 { font: 600 1.05rem/1.2 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--text-strong); white-space: nowrap; }
+.section__head::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* ---------- hero ---------- */
+.hero { padding-block: clamp(40px, 8vw, 96px) clamp(48px, 7vw, 80px); }
+.hero__grid { display: grid; gap: clamp(40px, 6vw, 72px); align-items: center; }
+@media (min-width: 980px) { .hero__grid { grid-template-columns: 1.1fr .9fr; } }
+.hero h1 {
+  margin: 22px 0 26px;
+  font: 800 clamp(3.1rem, 8.4vw, 6.4rem)/.98 var(--sans);
+  letter-spacing: -.035em;
+  color: var(--text-strong);
+}
+.hero h1 em { font-style: normal; color: var(--headline-accent); }
+.hero__intro { max-width: 34ch; font-size: clamp(1.15rem, 1.9vw, 1.42rem); line-height: 1.55; color: var(--text); }
+.hero__cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
+.hero__status { display: inline-flex; align-items: center; gap: 10px; margin-top: 28px; font: 400 .85rem/1.4 var(--mono); color: var(--text-muted); }
+.hero__status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--dot-fill); box-shadow: 0 0 10px var(--dot-glow); flex: none; }
+
+/* pipeline card */
+.pipe {
+  position: relative;
+  margin: 0;
+  padding: clamp(28px, 4vw, 44px);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--pipe-bg);
+  box-shadow: 0 30px 80px var(--shadow);
+}
+.pipe__caption { font: 500 .72rem/1 var(--mono); letter-spacing: .18em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 30px; }
+.pipe ol { list-style: none; margin: 0; padding: 0; position: relative; }
+.pipe li { position: relative; display: grid; grid-template-columns: 22px 1fr; gap: 20px; padding-bottom: 30px; }
+.pipe li:last-child { padding-bottom: 0; }
+.pipe li:not(:last-child)::before { content: ""; position: absolute; left: 10px; top: 26px; bottom: 4px; width: 2px; background: var(--line-strong); }
+.pipe .dot { width: 22px; height: 22px; border-radius: 50%; margin-top: 2px; background: var(--dot-fill); box-shadow: 0 0 12px var(--dot-glow); transition: opacity .5s, transform .5s var(--ease), box-shadow .5s; }
+.pipe .step__label { font: 500 .8rem/1.3 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.pipe .step__text { margin-top: 6px; font-size: clamp(1rem, 1.6vw, 1.15rem); line-height: 1.45; color: var(--text-strong); transition: opacity .5s; }
+.pipe li.is-accent .dot { background: var(--amber); box-shadow: 0 0 0 5px var(--human-ring), 0 0 16px rgba(255,180,59,.5); }
+.pipe li.is-accent .step__label { color: var(--human); }
+/* light-up sequence (only when motion is allowed and JS runs) */
+.motion .pipe li .dot { opacity: .25; transform: scale(.7); box-shadow: none; }
+.motion .pipe li .step__text { opacity: .45; }
+.motion .pipe li.is-lit .dot { opacity: 1; transform: scale(1); box-shadow: 0 0 12px var(--dot-glow); }
+.motion .pipe li.is-lit.is-accent .dot { box-shadow: 0 0 0 5px var(--human-ring), 0 0 16px rgba(255,180,59,.5); }
+.motion .pipe li.is-lit .step__text { opacity: 1; }
+
+/* ---------- impact strip ---------- */
+.impact { border-block: 1px solid var(--line); }
+.impact ul { display: grid; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 860px) { .impact ul { grid-template-columns: repeat(4, 1fr); } }
+.impact li { padding: 30px clamp(12px, 2vw, 28px); border-left: 1px solid var(--line); }
+.impact li:nth-child(odd) { border-left: 0; }
+@media (min-width: 860px) { .impact li:nth-child(odd) { border-left: 1px solid var(--line); } .impact li:first-child { border-left: 0; } }
+@media (max-width: 859px) { .impact li:nth-child(n+3) { border-top: 1px solid var(--line); } }
+.impact .value { font: 800 clamp(2rem, 4.4vw, 3rem)/1 var(--sans); color: var(--text-strong); letter-spacing: -.02em; }
+.impact .label { margin-top: 10px; font: 400 .8rem/1.45 var(--mono); color: var(--text-muted); letter-spacing: .04em; }
+
+/* ---------- case studies ---------- */
+.cases { display: grid; gap: 22px; }
+@media (min-width: 900px) { .cases { grid-template-columns: repeat(2, 1fr); } }
+.case {
+  display: flex; flex-direction: column;
+  padding: clamp(26px, 3.4vw, 38px);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--card);
+  transition: border-color .25s, transform .25s var(--ease), box-shadow .25s;
+}
+.case:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 24px 60px var(--shadow); }
+.case__kicker { font: 500 .75rem/1.5 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.case__kicker span { color: var(--text-muted); }
+.case h3 { margin-top: 16px; font: 600 clamp(1.35rem, 2.3vw, 1.7rem)/1.25 var(--sans); color: var(--text-strong); letter-spacing: -.01em; }
+.case__metric { margin-top: 18px; font: 400 clamp(1.05rem, 1.8vw, 1.3rem)/1.35 var(--mono); color: var(--accent); }
+.case__summary { margin-top: 14px; color: var(--text-muted); }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.tags li { padding: 5px 12px; border: 1px solid var(--line-strong); border-radius: 999px; font: 400 .74rem/1.4 var(--mono); color: var(--text); }
+.case details { margin-top: auto; padding-top: 24px; }
+.case summary {
+  display: inline-flex; align-items: center; gap: 10px; cursor: pointer; list-style: none;
+  font: 500 .8rem/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+}
+.case summary::-webkit-details-marker { display: none; }
+.case summary svg { width: 16px; height: 16px; transition: transform .25s var(--ease); }
+.case details[open] summary svg { transform: rotate(45deg); }
+.case dl { margin: 22px 0 0; display: grid; gap: 16px; }
+.case dt { font: 500 .72rem/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); }
+.case dd { margin: 6px 0 0; color: var(--text); font-size: .97rem; }
+.case dd.result { color: var(--text-strong); font-weight: 600; }
+.note { margin-top: 26px; font: 400 .8rem/1.5 var(--mono); color: var(--text-muted); }
+
+/* ---------- approach pillars ---------- */
+.pillars { display: grid; gap: 22px; }
+@media (min-width: 860px) { .pillars { grid-template-columns: repeat(3, 1fr); } }
+.pillar { padding: 32px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--card-soft); }
+.icon-tile { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 14px; border: 1px solid var(--line-strong); background: var(--card-solid); box-shadow: 0 0 22px var(--icon-glow); color: var(--accent); }
+.icon-tile svg { width: 24px; height: 24px; }
+.pillar.is-accent .icon-tile { color: var(--human); border-color: rgba(255,180,59,.5); box-shadow: 0 0 22px rgba(255,180,59,.15); }
+.pillar h3 { margin-top: 22px; font: 600 1.25rem/1.3 var(--sans); color: var(--text-strong); }
+.pillar p { margin-top: 10px; color: var(--text-muted); }
+
+/* ---------- experience ---------- */
+.timeline > li { display: grid; gap: 6px 40px; padding: 28px 0; border-top: 1px solid var(--line); }
+.timeline > li:last-child { border-bottom: 1px solid var(--line); }
+@media (min-width: 820px) { .timeline > li { grid-template-columns: 220px 1fr; } }
+.timeline .dates { font: 400 .85rem/1.6 var(--mono); color: var(--text-muted); padding-top: 3px; }
+.timeline h3 { font: 600 1.2rem/1.35 var(--sans); color: var(--text-strong); }
+.timeline .role { color: var(--accent); font-size: .97rem; margin-top: 2px; }
+.timeline ul { margin-top: 12px; display: grid; gap: 8px; }
+.timeline ul li { padding-left: 20px; position: relative; color: var(--text); }
+.timeline ul li::before { content: ""; position: absolute; left: 0; top: .72em; width: 8px; height: 2px; background: var(--accent-2); }
+
+/* ---------- skills ---------- */
+.skills { display: grid; gap: 22px; }
+@media (min-width: 760px) { .skills { grid-template-columns: repeat(2, 1fr); } }
+.skill { padding: 28px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--card-soft); }
+.skill__head { display: flex; align-items: center; gap: 16px; }
+.skill__head .icon-tile { width: 46px; height: 46px; border-radius: 12px; }
+.skill__head .icon-tile svg { width: 22px; height: 22px; }
+.skill h3 { font: 600 1.1rem/1.3 var(--sans); color: var(--text-strong); }
+.creds { display: grid; gap: 22px; margin-top: 22px; }
+@media (min-width: 860px) { .creds { grid-template-columns: 1fr 1fr; } }
+.creds h3 { font: 500 .78rem/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+.creds li { padding: 14px 0; border-top: 1px solid var(--line); }
+.creds li strong { display: block; color: var(--text-strong); font-weight: 600; }
+.creds li span { font: 400 .82rem/1.6 var(--mono); color: var(--text-muted); }
+
+/* ---------- contact ---------- */
+.contact {
+  display: grid; gap: clamp(32px, 5vw, 64px);
+  padding: clamp(28px, 5vw, 56px);
+  border-radius: calc(var(--radius) + 6px);
+  border: 1px solid var(--line-strong);
+  background: radial-gradient(120% 120% at 100% 0%, var(--contact-glow), transparent 55%), var(--card);
+}
+@media (min-width: 940px) { .contact { grid-template-columns: .9fr 1.1fr; } }
+.contact h2 { font: 800 clamp(2.2rem, 5vw, 3.6rem)/1.02 var(--sans); letter-spacing: -.03em; color: var(--text-strong); }
+.contact__text { margin-top: 18px; color: var(--text-muted); max-width: 40ch; }
+.contact__links { margin-top: 30px; display: grid; gap: 14px; }
+.contact__links a { display: inline-flex; align-items: center; gap: 12px; font: 400 .95rem/1.4 var(--mono); color: var(--text); text-decoration: none; word-break: break-all; }
+.contact__links a:hover { color: var(--accent); }
+.contact__links svg { width: 20px; height: 20px; color: var(--accent); flex: none; }
+.form { display: grid; gap: 16px; }
+.field label { display: block; margin-bottom: 8px; font: 500 .75rem/1 var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--text-muted); }
+.field input, .field textarea {
+  width: 100%; padding: 14px 16px;
+  border-radius: 14px; border: 1px solid var(--line-strong);
+  background: var(--field-bg); color: var(--text-strong);
+  font: 400 1rem/1.5 var(--sans);
+  transition: border-color .2s, box-shadow .2s;
+}
+.field textarea { min-height: 140px; resize: vertical; }
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--icon-glow); }
+.form__row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.form__status { font: 400 .85rem/1.5 var(--mono); color: var(--accent); }
+.form__status.is-error { color: var(--human); }
+.hp { position: absolute; left: -9999px; }
+
+/* ---------- footer ---------- */
+.footer { padding-block: 40px 56px; }
+.footer__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px; align-items: center; font: 400 .8rem/1.6 var(--mono); color: var(--text-muted); }
+
+/* ---------- reveal on scroll ---------- */
+.motion .rv { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.motion .rv.is-in { opacity: 1; transform: none; }
+
+/* ---------- print ---------- */
+@media print {
+  :root { --bg: #fff; --text: #000; --text-strong: #000; --text-muted: #333; --accent: #1747B8; --card: none; --card-soft: none; }
+  body { background: #fff; }
+  body::before, .nav, .hero__cta, .form, .pipe, .skip { display: none !important; }
+  .case, .pillar, .skill, .contact { border-color: #ccc; break-inside: avoid; }
+  .rv { opacity: 1 !important; transform: none !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" data-section="nav">
+  <div class="wrap nav__inner">
+    <a class="logo" href="#top" aria-label="SHAH, back to top"><svg viewBox="2 1 36 46" aria-hidden="true"><path class="logo-s" d="M30 8H16a8 8 0 0 0 0 16h8a8 8 0 0 1 0 16H10" fill="none" stroke="#fff" stroke-width="7.5" stroke-linejoin="round"/><circle class="logo-dot" cx="30" cy="8" r="5.2" fill="#7DCBFF"/><circle class="logo-dot" cx="10" cy="40" r="5.2" fill="#7DCBFF"/></svg><span>SHAH</span></a>
+    <nav class="nav__links" aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch color theme"><svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg><svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+      <a class="btn btn--secondary btn--sm" href="#contact">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top" data-section="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <p class="eyebrow">Data analyst → automation &amp; agents</p>
+        <h1>From SQL<br>to <em>agents.</em></h1>
+        <p class="hero__intro">I&#x27;m Shah, a data analyst turning repeatable analysis into automated, tested workflows, with a person approving what matters.</p>
+        <div class="hero__cta">
+          <a class="btn btn--primary" href="#work">See the work</a>
+          <a class="btn btn--secondary" href="resume.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg>Download resume</a>
+        </div>
+        <p class="hero__status">Open to Data &amp; BI Analyst roles · New York, NY</p>
+      </div>
+      <figure class="pipe" aria-label="The workflow I build toward">
+        <figcaption class="pipe__caption">The workflow I build toward</figcaption>
+        <ol>
+          <li><span class="dot" aria-hidden="true"></span><div><p class="step__label">01 · Query</p><p class="step__text">SQL on tested, documented tables</p></div></li>
+          <li><span class="dot" aria-hidden="true"></span><div><p class="step__label">02 · Agent</p><p class="step__text">Drafts the analysis and flags what looks off</p></div></li>
+          <li class="is-accent"><span class="dot" aria-hidden="true"></span><div><p class="step__label">03 · Human review</p><p class="step__text">I check the result before it ships</p></div></li>
+          <li><span class="dot" aria-hidden="true"></span><div><p class="step__label">04 · Decision</p><p class="step__text">Stakeholders get a clean, repeatable answer</p></div></li>
+        </ol>
+      </figure>
+    </div>
+  </section>
+
+  <section class="impact" aria-label="Impact at a glance" data-section="impact">
+    <div class="wrap">
+      <ul>
+        <li class="rv"><p class="value">5+</p><p class="label">years in analytics</p></li>
+        <li class="rv"><p class="value">700+</p><p class="label">NYC schools on automated dashboards</p></li>
+        <li class="rv"><p class="value">80%</p><p class="label">faster report turnaround</p></li>
+        <li class="rv"><p class="value">+35%</p><p class="label">website traffic from market analysis</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="work" data-section="work">
+    <div class="wrap">
+      <div class="section__head"><span class="num">01</span><h2>Selected work</h2></div>
+      <div class="cases">
+        <article class="case rv">
+          <p class="case__kicker">Case study 01 <span>· NYC Department of Health</span></p>
+          <h3>Manual reports → automated school dashboards</h3>
+          <p class="case__metric">700+ dashboards · 80% faster</p>
+          <p class="case__summary">A VBA macro and Power Query pipeline that turns staff spreadsheets into per-school PDF dashboards, filed by district in SharePoint.</p>
+          <ul class="tags"><li>Excel VBA</li><li>Power Query</li><li>SharePoint</li></ul>
+          <details>
+            <summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Read the case study</summary>
+            <dl>
+              <div><dt>Problem</dt><dd>School Medical Directors needed each school&#x27;s health data (asthma rates, screening results) before site visits. Compiling it was a manual, file-by-file process, and 10+ staff editing shared inputs risked overwriting each other&#x27;s work.</dd></div>
+              <div><dt>Approach</dt><dd>Designed a Power Query pipeline that consolidates inputs from 10+ staff into one dataset without touching the source files. Built an Excel VBA macro that formats a dashboard for every school, exports each one as a PDF, and files it into district-organized SharePoint folders.</dd></div>
+              <div><dt>How I checked it</dt><dd>Source files stay read-only, so every dashboard can be traced back to its inputs, and a single consolidated dataset removed overwrite conflicts.</dd></div>
+              <div><dt>Result</dt><dd class="result">Dashboards for 700+ NYC public schools, delivered straight to Medical Directors, with report turnaround improved by 80%.</dd></div>
+            </dl>
+          </details>
+        </article>
+        <article class="case rv">
+          <p class="case__kicker">Case study 02 <span>· NYC Department of Health</span></p>
+          <h3>Gut-feel priorities → validated risk model</h3>
+          <p class="case__metric">700+ schools · 6 weighted indicators</p>
+          <p class="case__summary">Co-built a School Risk Prioritization Model and independently re-ran it in Python before it reached management.</p>
+          <ul class="tags"><li>Python</li><li>Excel</li><li>PowerPoint</li></ul>
+          <details>
+            <summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Read the case study</summary>
+            <dl>
+              <div><dt>Problem</dt><dd>The Bureau of School Health needed a defensible way to decide which of 700+ public schools to prioritize, using several health and risk indicators at once.</dd></div>
+              <div><dt>Approach</dt><dd>Partnered with a colleague on a model ranking schools across 6 weighted indicators. Built a parallel analysis in Python to reproduce the ranking independently.</dd></div>
+              <div><dt>How I checked it</dt><dd>Compared the Python results against the model output and quality-checked the final ranked list before presenting it.</dd></div>
+              <div><dt>Result</dt><dd class="result">A ranked, validated list of 700+ schools presented to management to guide where support goes first.</dd></div>
+            </dl>
+          </details>
+        </article>
+        <article class="case rv">
+          <p class="case__kicker">Case study 03 <span>· Mirimus Inc.</span></p>
+          <h3>Spreadsheet guesswork → forecasting dashboards</h3>
+          <p class="case__metric">+20% forecast accuracy</p>
+          <p class="case__summary">Weekly test-volume, capacity and staffing forecasts for a COVID-testing lab serving B2B partners and NJ public schools.</p>
+          <ul class="tags"><li>SQL</li><li>Excel</li><li>Tableau</li><li>Shopify Analytics</li></ul>
+          <details>
+            <summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Read the case study</summary>
+            <dl>
+              <div><dt>Problem</dt><dd>A biotech startup&#x27;s testing supply chain had to plan lab staffing and inventory around demand that changed week to week.</dd></div>
+              <div><dt>Approach</dt><dd>Designed weekly test-volume, capacity and staffing forecasting dashboards in Excel and SQL, plus recurring KPI dashboards on inventory and lab staffing in Shopify Analytics and Tableau.</dd></div>
+              <div><dt>How I checked it</dt><dd>Reviewed the dashboards in daily and weekly team meetings, where the operations team checked them against what actually happened.</dd></div>
+              <div><dt>Result</dt><dd class="result">Forecasting accuracy improved by 20%, letting a team of 10+ lab technicians adjust schedules ahead of time.</dd></div>
+            </dl>
+          </details>
+        </article>
+        <article class="case rv">
+          <p class="case__kicker">Case study 04 <span>· Serino Coyne (Omnicom)</span></p>
+          <h3>Market research → holiday pricing strategy</h3>
+          <p class="case__metric">+35% traffic · +25% conversion</p>
+          <p class="case__summary">Competitor and consumer analysis behind a new holiday-season pricing and promotion plan.</p>
+          <ul class="tags"><li>Excel</li><li>SQL</li><li>Market research</li></ul>
+          <details>
+            <summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Read the case study</summary>
+            <dl>
+              <div><dt>Problem</dt><dd>A client needed a holiday-season pricing and promotional strategy grounded in market data, not instinct.</dd></div>
+              <div><dt>Approach</dt><dd>Ran market trend research and competitor analysis, and analyzed 1,000+ consumer demographic and financial data points in Excel (SUMIFS, VLOOKUP, PivotTables) to inform pricing adjustments. Automated the recurring reports with SQL and Excel.</dd></div>
+              <div><dt>How I checked it</dt><dd>Recurring reports were automated rather than rebuilt by hand, so stakeholders saw consistent numbers every cycle, 20% faster.</dd></div>
+              <div><dt>Result</dt><dd class="result">35% more website traffic, a 25% higher conversion rate, and a 20% increase in ticket sales.</dd></div>
+            </dl>
+          </details>
+        </article>
+      </div>
+      <p class="note">Details are generalized. No confidential data is shown.</p>
+    </div>
+  </section>
+
+  <section class="section" id="approach" data-section="approach" style="padding-top:0">
+    <div class="wrap">
+      <div class="section__head"><span class="num">02</span><h2>How I work</h2></div>
+      <div class="pillars">
+        <article class="pillar rv"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 5.8v5.4c0 4.4 2.9 8.3 7 9.8 4.1-1.5 7-5.4 7-9.8V5.8L12 3z"/></svg></div><h3>Trusted data</h3><p>Pipelines that protect their sources: one consolidated dataset from 10+ contributors, and models re-checked independently in Python before anyone acts on them.</p></article>
+        <article class="pillar rv"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2.5 4.5 13.5h6.5l-1 8 8.5-11h-6.5l1-8z"/></svg></div><h3>Automated workflows</h3><p>If a report runs twice, it should run itself: VBA, Power Query and SQL replacing manual compiling, formatting and filing.</p></article>
+        <article class="pillar rv is-accent"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4.5h14a1.5 1.5 0 0 1 1.5 1.5v9a1.5 1.5 0 0 1-1.5 1.5H10l-5 4v-4.5A1.5 1.5 0 0 1 3.5 15V6A1.5 1.5 0 0 1 5 4.5z"/></svg></div><h3>Human on the loop</h3><p>Automation drafts; a person decides. I quality-check outputs and present them so stakeholders can act with confidence.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="experience" data-section="experience" style="padding-top:0">
+    <div class="wrap">
+      <div class="section__head"><span class="num">03</span><h2>Experience</h2></div>
+      <ol class="timeline" style="list-style:none;margin:0;padding:0">
+        <li class="rv"><p class="dates">Apr 2025 – Present</p><div><h3>NYC Department of Health (DOHMH)</h3><p class="role">Data Analyst, Bureau of School Health</p><ul><li>Co-built a School Risk Prioritization Model for 700+ schools and validated it with a parallel Python analysis.</li><li>Automated per-school health dashboards (VBA + Power Query) with PDF export to SharePoint, improving turnaround by 80%.</li></ul></div></li>
+        <li class="rv"><p class="dates">Oct 2023 – Nov 2025</p><div><h3>Apple</h3><p class="role">Product Specialist (Part-Time)</p><ul><li>Analyzed customer purchasing patterns to recommend tailored bundles, averaging $250K in quarterly sales with 95+ NPS.</li><li>Connected 50+ local business prospects per quarter with Apple&#x27;s Business Team, contributing to a 20% boost in B2B conversion.</li></ul></div></li>
+        <li class="rv"><p class="dates">Mar 2022 – Apr 2023</p><div><h3>Serino Coyne by Omnicom</h3><p class="role">Analyst, Client Insights</p><ul><li>Market and competitor analysis behind a holiday pricing strategy: +35% traffic, +25% conversion.</li><li>Automated recurring reports with SQL and Excel, speeding up analysis turnaround by 20%.</li></ul></div></li>
+        <li class="rv"><p class="dates">Feb 2022 – Nov 2023</p><div><h3>COOP Careers</h3><p class="role">Data Analytics Instructor</p><ul><li>Designed and taught a semester-long Excel, Tableau and SQL curriculum to 17+ students per semester, with 93% retention.</li></ul></div></li>
+        <li class="rv"><p class="dates">Apr 2021 – Mar 2022</p><div><h3>Mirimus Inc.</h3><p class="role">Junior Analyst, Sales &amp; Operations</p><ul><li>Built forecasting and KPI dashboards (Excel, SQL, Tableau) that improved forecast accuracy by 20%.</li><li>Streamlined 300+ weekly B2B inquiries in HubSpot and Monday.com, improving operational efficiency by 15%.</li></ul></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="skills" data-section="skills" style="padding-top:0">
+    <div class="wrap">
+      <div class="section__head"><span class="num">04</span><h2>Skills &amp; education</h2></div>
+      <div class="skills">
+        <article class="skill rv"><div class="skill__head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M7 16.5v-5M12 16.5v-9M17 16.5V10"/></svg></div><h3>Analysis &amp; BI</h3></div><ul class="tags"><li>SQL (MySQL)</li><li>Python</li><li>Excel</li><li>Power BI</li><li>Tableau</li><li>PowerPoint</li></ul></article>
+        <article class="skill rv"><div class="skill__head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2.5 4.5 13.5h6.5l-1 8 8.5-11h-6.5l1-8z"/></svg></div><h3>Automation</h3></div><ul class="tags"><li>VBA</li><li>Power Query</li><li>Data pipelines</li><li>Report automation</li><li>Git</li><li>Google Colab</li></ul></article>
+        <article class="skill rv"><div class="skill__head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 4.5-9 4.5-9-4.5L12 3z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/></svg></div><h3>Methods</h3></div><ul class="tags"><li>Dashboard design</li><li>KPI reporting</li><li>Forecasting</li><li>Cohort analysis</li><li>Market research</li><li>Competitor benchmarking</li></ul></article>
+        <article class="skill rv"><div class="skill__head"><div class="icon-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></div><h3>Platforms &amp; domains</h3></div><ul class="tags"><li>SharePoint</li><li>HubSpot</li><li>Shopify Analytics</li><li>Monday.com</li><li>Public health data</li><li>B2B sales analytics</li></ul></article>
+      </div>
+      <div class="creds">
+        <div class="rv">
+          <h3>Education</h3>
+          <ul>
+            <li><strong>Zicklin School of Business, Baruch College (CUNY)</strong><span>M.S. Information Systems, Data Analytics concentration · Expected May 2027</span></li>
+            <li><strong>Queens College (CUNY)</strong><span>B.A. Economics, Minor in Urban Planning · 2021</span></li>
+          </ul>
+        </div>
+        <div class="rv">
+          <h3>Certifications</h3>
+          <ul>
+            <li><strong>Advanced Formulas and Functions in Excel</strong><span>NASBA · 2024</span></li>
+            <li><strong>AI for Data Professionals</strong><span>Analyst Builder</span></li>
+            <li><strong>SQL coursework: Intermediate SQL, Joining Data, Hierarchical &amp; Recursive Queries</strong><span>DataCamp · 2025</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact" data-section="contact" style="padding-top:0">
+    <div class="wrap">
+      <div class="section__head"><span class="num">05</span><h2>Contact</h2></div>
+      <div class="contact rv">
+        <div>
+          <h2>Let&#x27;s talk data.</h2>
+          <p class="contact__text">Hiring for a data or BI analyst role, or have a reporting process that should run itself? Send a note and I&#x27;ll get back to you.</p>
+          <div class="contact__links">
+            <a href="mailto:shahariarshadab07@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg>shahariarshadab07@gmail.com</a>
+            <a href="https://www.linkedin.com/in/shahariar-shadab" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>linkedin.com/in/shahariar-shadab</a>
+            <a href="https://github.com/shahariar-shadab" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8.5 8-4 4 4 4M15.5 8l4 4-4 4"/></svg>github.com/shahariar-shadab</a>
+            <a href="resume.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14"/></svg>Download resume (PDF)</a>
+          </div>
+        </div>
+        <form class="form" id="contact-form" action="mailto:shahariarshadab07@gmail.com" method="POST" data-mode="mailto" data-email="shahariarshadab07@gmail.com">
+          <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
+          <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+          <div class="field"><label for="f-msg">Message</label><textarea id="f-msg" name="message" required></textarea></div>
+          <input class="hp" type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="form__row">
+            <button class="btn btn--accent" type="submit">Send message</button>
+            <p class="form__status" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer" data-section="footer">
+  <div class="wrap footer__inner">
+    <a class="logo" href="#top" aria-label="SHAH, back to top"><svg viewBox="2 1 36 46" aria-hidden="true"><path class="logo-s" d="M30 8H16a8 8 0 0 0 0 16h8a8 8 0 0 1 0 16H10" fill="none" stroke="#fff" stroke-width="7.5" stroke-linejoin="round"/><circle class="logo-dot" cx="30" cy="8" r="5.2" fill="#7DCBFF"/><circle class="logo-dot" cx="10" cy="40" r="5.2" fill="#7DCBFF"/></svg><span>SHAH</span></a>
+    <p>© 2026 Shahariar Shadab · Designed &amp; built with Claude Code</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const motion = root.classList.contains("motion");
+
+  // Theme toggle: an explicit choice overrides the system setting and is remembered
+  const toggle = document.getElementById("theme-toggle");
+  const systemLight = matchMedia("(prefers-color-scheme: light)");
+  const current = () => root.dataset.theme || (systemLight.matches ? "light" : "dark");
+  const label = () => toggle.setAttribute("aria-label", current() === "dark" ? "Switch to light theme" : "Switch to dark theme");
+  label();
+  systemLight.addEventListener("change", label);
+  toggle.addEventListener("click", () => {
+    const next = current() === "dark" ? "light" : "dark";
+    root.dataset.theme = next;
+    try { localStorage.setItem("theme", next); } catch (e) {}
+    label();
+  });
+
+  // Nav background once the page scrolls
+  const nav = document.querySelector(".nav");
+  const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 8);
+  onScroll();
+  addEventListener("scroll", onScroll, { passive: true });
+
+  // Hero pipeline: steps light up in order
+  const steps = [...document.querySelectorAll(".pipe li")];
+  if (motion) steps.forEach((li, i) => setTimeout(() => li.classList.add("is-lit"), 500 + i * 550));
+  else steps.forEach(li => li.classList.add("is-lit"));
+
+  // Reveal on scroll
+  const rv = document.querySelectorAll(".rv");
+  if (motion && "IntersectionObserver" in window) {
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+    }), { rootMargin: "0px 0px -8% 0px" });
+    rv.forEach(el => io.observe(el));
+  } else rv.forEach(el => el.classList.add("is-in"));
+
+  // Contact form: Formspree when configured, otherwise compose an email
+  const form = document.getElementById("contact-form");
+  const status = form.querySelector(".form__status");
+  form.addEventListener("submit", async ev => {
+    ev.preventDefault();
+    if (form._gotcha.value) return;
+    const data = new FormData(form);
+    if (form.dataset.mode !== "formspree") {
+      const subject = encodeURIComponent("Portfolio inquiry from " + data.get("name"));
+      const body = encodeURIComponent(data.get("message") + "\n\n— " + data.get("name") + " (" + data.get("email") + ")");
+      location.href = "mailto:" + form.dataset.email + "?subject=" + subject + "&body=" + body;
+      status.textContent = "Opening your email app…";
+      return;
+    }
+    status.classList.remove("is-error");
+    status.textContent = "Sending…";
+    try {
+      const res = await fetch(form.action, { method: "POST", body: data, headers: { Accept: "application/json" } });
+      if (!res.ok) throw new Error(res.status);
+      form.reset();
+      status.textContent = "Thanks! I'll get back to you soon.";
+    } catch {
+      status.classList.add("is-error");
+      status.textContent = "Couldn't send. Please email me directly.";
+    }
+  });
+})();
+</script>
+</body>
+</html>
