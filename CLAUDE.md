@@ -92,6 +92,17 @@ brand_assets/            approved logo, guidelines, banner, hero mockup (read-on
 .tmp/                    disposable intermediates (resume text, previews)
 ```
 
+## Next up (paused 2026-10-16 — resume here)
+
+Site is live and secure at https://shahariarshadab.com. Open items, in order:
+1. **Check DNSSEC finished:** `dig +short shahariarshadab.com DS @a.gtld-servers.net` should return a record (Cloudflare adds it automatically).
+2. **Remind Shah to Sync in VS Code:** 4 notes-only commits are waiting (they don't change the site).
+3. **Shah's account security** (unconfirmed): 2FA on Gmail/GitHub/Cloudflare; GitHub → Settings → Emails privacy + "block pushes that expose my email"; GitHub domain verification (TXT); Cloudflare auto-renew.
+4. **Resume:** Shah updates the resume header with shahariarshadab.com and removes the `0000000` phone placeholder → new PDF in `content/resume/` → run `workflows/update_from_resume.md`.
+5. **Add GitHub projects** to the site (`Tableau-Data-Analytics-Projects`, `MySQL-Data-Analytics-Projects`): read the repos first, propose descriptions, get approval.
+6. **Contact form:** Formspree setup → `PUBLIC_FORMSPREE_ID`; then consider blanking `PUBLIC_EMAIL` to keep the address off the page.
+7. Later / optional: case-study before/after numbers (INFO_NEEDED.md #3), highlighter + click-to-see-evidence on metrics, self-hosted fonts.
+
 ## Status / decisions log
 
 - 2026-10-14 — Project started. Design = SHAH brand (not the InstaLanding editorial style). Hosting = GitHub Pages from `main:/docs`. Extras wanted: Formspree contact form, low-cost custom domain (Shah buys it). No photo; logo mark instead. Resume download offered without the blank cover page.
