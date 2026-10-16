@@ -92,16 +92,14 @@ brand_assets/            approved logo, guidelines, banner, hero mockup (read-on
 .tmp/                    disposable intermediates (resume text, previews)
 ```
 
-## Next up (paused 2026-10-16 — resume here)
+## Next up (resume here)
 
 Site is live and secure at https://shahariarshadab.com. Open items, in order:
-1. **Check DNSSEC finished:** `dig +short shahariarshadab.com DS @a.gtld-servers.net` should return a record (Cloudflare adds it automatically).
-2. **Remind Shah to Sync in VS Code:** 4 notes-only commits are waiting (they don't change the site).
-3. **Shah's account security** (unconfirmed): 2FA on Gmail/GitHub/Cloudflare; GitHub → Settings → Emails privacy + "block pushes that expose my email"; GitHub domain verification (TXT); Cloudflare auto-renew.
-4. **Resume:** Shah updates the resume header with shahariarshadab.com and removes the `0000000` phone placeholder → new PDF in `content/resume/` → run `workflows/update_from_resume.md`.
-5. **Add GitHub projects** to the site (`Tableau-Data-Analytics-Projects`, `MySQL-Data-Analytics-Projects`): read the repos first, propose descriptions, get approval.
-6. **Contact form:** Formspree setup → `PUBLIC_FORMSPREE_ID`; then consider blanking `PUBLIC_EMAIL` to keep the address off the page.
-7. Later / optional: case-study before/after numbers (INFO_NEEDED.md #3), highlighter + click-to-see-evidence on metrics, self-hosted fonts.
+1. **Personal checklist:** ask Shah about the open items in `content/INFO_NEEDED.md` §9. It's private, so keep account details out of this public file.
+2. **Resume:** Shah updates the resume header with shahariarshadab.com and removes the `0000000` phone placeholder → new PDF in `content/resume/` → run `workflows/update_from_resume.md`.
+3. **Add GitHub projects** to the site (`Tableau-Data-Analytics-Projects`, `MySQL-Data-Analytics-Projects`): read the repos first, propose descriptions, get approval.
+4. **Contact form:** Formspree setup → `PUBLIC_FORMSPREE_ID`; then consider blanking `PUBLIC_EMAIL` to keep the address off the page.
+5. Later / optional: case-study before/after numbers (INFO_NEEDED.md #3), highlighter + click-to-see-evidence on metrics, self-hosted fonts.
 
 ## Status / decisions log
 
@@ -113,8 +111,9 @@ Site is live and secure at https://shahariarshadab.com. Open items, in order:
 - 2026-10-14 — Repo kept lean at Shah's request: `brand_assets/` and the source resume PDFs are gitignored (local only). The committed site uses the generated `docs/og.png` and `docs/resume.pdf`, so a fresh clone can't rebuild those two without the local files — that's intended.
 - 2026-10-14 — **LIVE at https://shahariar-shadab.github.io/** (GitHub Pages, `main` → `/docs`; went live ~20s after saving). Shah pushes from VS Code (Source Control → Sync/Publish, GitHub browser sign-in); no credentials are stored for the CLI. Live checks passed: desktop + mobile, dark + light (auto), resume/og/favicon 200, no console errors.
 - 2026-10-16 — Custom domain **shahariarshadab.com** bought at Cloudflare Registrar (Cloudflare DNS). `PUBLIC_DOMAIN` set → build writes `docs/CNAME`; canonical/OG now use the domain. DNS: GitHub Pages A/AAAA on apex + `www` CNAME → `shahariar-shadab.github.io`, all **DNS only (grey cloud)**.
-- 2026-10-16 — **LIVE at https://shahariarshadab.com/**. DNS is correct (4 GitHub A records + `www` CNAME, grey cloud), the Let's Encrypt cert covers apex + www, `www` → 301 to the apex, resume/og return 200, no console errors. Still open: Shah ticks **Enforce HTTPS** (http currently 200, github.io → http), enables **DNSSEC**, adds the **SPF/DMARC** no-email records, and does GitHub domain verification + 2FA (see `workflows/deploy_github_pages.md` step 5).
+- 2026-10-16 — **LIVE at https://shahariarshadab.com/**. DNS is correct (4 GitHub A records + `www` CNAME, grey cloud), the Let's Encrypt cert covers apex + www, `www` → 301 to the apex, resume/og return 200, no console errors. Remaining hardening (Enforce HTTPS, DNSSEC, SPF/DMARC) is logged below; see `workflows/deploy_github_pages.md` step 5.
 - 2026-10-16 — Hardening: SPF `v=spf1 -all` and DMARC `p=reject` are live (confirmed via 1.1.1.1 and 8.8.8.8). DNSSEC is enabled at Cloudflare (DNSKEY served); the DS record is not yet at the .com registry, which Cloudflare Registrar submits on its own (re-check `dig +short shahariarshadab.com DS`). Enforce HTTPS was ticked, but `http://` was still serving 200 at last check, while GitHub's banner still said "DNS Check in Progress".
 - 2026-10-16 — **HTTPS enforced.** GitHub shows "DNS check successful" + Enforce HTTPS ticked. Every entry point lands on `https://shahariarshadab.com/` (http/https, www, and both github.io variants). The http redirect took about 7 min to appear because GitHub's CDN had cached the old 200 (`Cache-Control: max-age=600`). Only DNSSEC's DS record at .com is still pending (automatic).
+- 2026-10-17 — **DNSSEC active:** the DS record is at the .com registry and resolvers return validated (`ad`) answers. All domain hardening is done: HTTPS enforced, WHOIS privacy, transfer lock, SPF, DMARC, DNSSEC. Repo stays **public** (free GitHub Pages requires it; it contains nothing sensitive). Personal account to-dos moved to the private `content/INFO_NEEDED.md` §9.
 - Shah has public GitHub repos `Tableau-Data-Analytics-Projects` and `MySQL-Data-Analytics-Projects` — candidates to link from case studies / a projects section (ask first).
 - Known: the resume PDF shows a placeholder phone `0000000`; the downloadable `docs/resume.pdf` inherits it until Shah exports a fixed resume.
