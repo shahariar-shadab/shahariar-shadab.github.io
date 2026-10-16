@@ -30,11 +30,22 @@
    - On Cloudflare, set these records to **DNS only** (grey cloud) until GitHub has issued the certificate.
 3. GitHub **Settings → Pages → Custom domain** shows the domain from `CNAME`. Once the DNS check passes, tick **Enforce HTTPS**. The certificate can take up to about an hour.
 4. Recommended: **Settings → Pages → Verify domain** (add the TXT record GitHub shows), which stops others from claiming the domain.
+5. Security hardening (Cloudflare, all records DNS only):
+   - **DNSSEC:** DNS → Settings → Enable DNSSEC. Cloudflare Registrar adds the DS record automatically.
+   - **No-email domain protection:** TXT `@` = `v=spf1 -all`, and TXT `_dmarc` = `v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s`. Remove these if email is ever set up on the domain.
+6. Verify with these checks:
+   - `dig +short <domain> A @1.1.1.1` returns the 4 GitHub IPs. Cloudflare IPs (104.x / 172.x) mean the proxy is still orange.
+   - `curl -sI https://<domain>` returns 200.
+   - `www` and `<user>.github.io` return a 301 to the domain.
+   - `openssl s_client -connect <domain>:443 -servername <domain>` shows a Let's Encrypt certificate for the apex and `www`.
+   - `dig +short <domain> DS` shows the DNSSEC record, and the SPF/DMARC TXT records resolve.
 
 ## Every later update
 Build → check locally → commit → (Shah says go) → `git push`. Pages redeploys automatically in about a minute.
 
 ## Edge cases / learnings
+- Cloudflare creates every new DNS record as **proxied (orange cloud)** by default. Switch each one to **DNS only** before saving, or GitHub can't see the records and won't issue the certificate.
+- With the records grey, the Let's Encrypt certificate (apex + `www`) arrived quickly (2026-10-16). Until **Enforce HTTPS** is ticked, `http://` serves the page without redirecting, and the github.io link forwards to `http://` rather than `https://`.
 - `docs/.nojekyll` is written by the build so GitHub serves files as-is (no Jekyll processing).
 - If Pages shows a 404 right after enabling it, wait a couple of minutes. Then check that the branch and folder are `main` and `/docs`.
 - Don't commit `.env`. `.gitignore` covers it; confirm with `git check-ignore .env`.

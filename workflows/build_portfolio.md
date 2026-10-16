@@ -13,7 +13,7 @@
 2. Build with `.venv/bin/python tools/build_site.py`. The build prints what it made, the form mode (`formspree` or `mailto`) and the site URL.
 3. Preview by serving `docs/` (`python3 -m http.server 8000 -d docs`), or use the `portfolio` entry in `.claude/launch.json`. Open http://localhost:8000.
 4. Check:
-   - Desktop and 375px mobile, with no horizontal scroll (`document.documentElement.scrollWidth === innerWidth`).
+   - Desktop and 375px mobile, with no horizontal scroll (`document.documentElement.scrollWidth <= document.documentElement.clientWidth`). Compare against `clientWidth`, not `innerWidth`: on desktop, `innerWidth` includes the ~15px scrollbar, so the `innerWidth` check gives a false "overflow".
    - No console errors.
    - Every `#anchor` link resolves. `resume.pdf`, `favicon.svg` and `og.png` all return 200.
    - `resume.pdf` starts with the name header, not the blank cover page.
