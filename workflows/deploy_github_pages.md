@@ -45,6 +45,7 @@ Build → check locally → commit → (Shah says go) → `git push`. Pages rede
 
 ## Edge cases / learnings
 - Cloudflare creates every new DNS record as **proxied (orange cloud)** by default. Switch each one to **DNS only** before saving, or GitHub can't see the records and won't issue the certificate.
+- After ticking **Enforce HTTPS**, `http://` can keep returning a cached 200 for up to 10 minutes (GitHub's CDN uses `max-age=600`; check the `Age`/`X-Cache` headers). Wait it out; nothing needs changing.
 - With the records grey, the Let's Encrypt certificate (apex + `www`) arrived quickly (2026-10-16). Until **Enforce HTTPS** is ticked, `http://` serves the page without redirecting, and the github.io link forwards to `http://` rather than `https://`.
 - `docs/.nojekyll` is written by the build so GitHub serves files as-is (no Jekyll processing).
 - If Pages shows a 404 right after enabling it, wait a couple of minutes. Then check that the branch and folder are `main` and `/docs`.
